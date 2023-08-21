@@ -1,19 +1,23 @@
-import './globals.css'
-import type { Metadata } from 'next'
+import Navbar from "@/components/navbar";
+import "./globals.css";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Assessment website',
-  description: 'Assessment website with login/signup functionality',
-}
+  title: "Assessment website",
+  description: "Assessment website with login/signup functionality",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-theme="synthwave">
-      <body>{children}</body>
+    <html lang="en" data-theme="night">
+      <body>
+        <Navbar />
+        {children}
+      </body>
     </html>
-  )
+  );
 }
