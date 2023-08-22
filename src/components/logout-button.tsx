@@ -5,7 +5,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 function LogoutButton() {
     const {logout} = useAuth0();
     const logOutHandler = () => {
-        logout();
+        logout({logoutParams: {returnTo: window.location.origin}});
     }
   return <button onClick={logOutHandler} className="btn border border-gray-800">Log Out</button>;
 }
