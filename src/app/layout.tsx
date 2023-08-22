@@ -1,6 +1,7 @@
+import Auth0ContextProvider from "@/components/Auth0ContextProvider";
 import Navbar from "@/components/navbar";
-import "./globals.css";
 import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Assessment website",
@@ -14,10 +15,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-theme="night">
-      <body>
-        <Navbar />
-        {children}
-      </body>
+      <Auth0ContextProvider>
+        <body>
+          <Navbar />
+          {children}
+        </body>
+      </Auth0ContextProvider>
     </html>
   );
 }
