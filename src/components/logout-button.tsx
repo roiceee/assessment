@@ -7,7 +7,7 @@ function LogoutButton() {
     const logOutHandler = () => {
         logout();
     }
-  return <button onClick={logOutHandler} className="btn btn-secondary">Log Out</button>;
+  return <button onClick={logOutHandler} className="btn border border-gray-800">Log Out</button>;
 }
 
 export default LogoutButton;

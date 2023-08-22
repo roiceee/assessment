@@ -5,13 +5,74 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Image from "next/image";
 import image from "public/space.jpg";
 import editImage from "public/edit.svg";
+import UserInfoDiv from "@/components/user-info-div";
+import { useState } from "react";
+import UserInfo from "@/interface/user-info";
 
 export default function Home() {
   const auth = useAuth0();
+  const [isEditing, setIsEditing] = useState(false);
+  
+
+  const auth0 = useAuth0();
+
+  const edit = () => {
+    if (isEditing) {
+      return;
+    }
+    setIsEditing(true);
+  };
+
+  const unedit = () => {
+    if (!isEditing) {
+      return;
+    }
+    setIsEditing(false);
+  };
+
+  const getUserInfoState = async () => {
+    try {
+      const token = await auth0.getAccessTokenSilently();
+      const response = await fetch(`${process.env.NEXT_PUBLIC_RESOURCE_SERVER}/api/userinfo/get`, {
+        method: "GET",
+        headers: {
+          "CORS": "Access-Control-Allow-Origin",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status !== 200) {
+        return null;
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const saveUserInfoState = async (userInfoState: UserInfo) => {
+    const token = await auth0.getAccessTokenSilently();
+    const response = await fetch(`${process.env.NEXT_PUBLIC_RESOURCE_SERVER}/api/userinfo/save`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(userInfoState),
+    });
+    if (response.status !== 200) {
+      return;
+    }
+    const data = await response.json();
+    return data;
+  };
 
   return (
     <main
-      className="flex min-h-screen w-screen justify-center md:justify-end items-center"
+      className="flex min-h-screen justify-center md:justify-end items-center"
       style={{
         backgroundImage: `url('${image.src}')`,
         backgroundSize: "cover",
@@ -48,14 +109,23 @@ export default function Home() {
             </h1>
             <div className=" flex items-center gap-2">
               <h3 className="my-0">User Information</h3>
-              <Image className=" my-0" src={editImage} alt="edit icon"/>
+              <Image
+                className=" my-0 hover:scale-125"
+                src={editImage}
+                alt="edit icon"
+                onClick={edit}
+              />
             </div>
             <hr className="my-1" />
             <div className="mb-4">
-              <div>About me:</div>
-              <div>Phone number:</div>
+              <UserInfoDiv
+                isEditing={isEditing}
+                getUserInfo={getUserInfoState}
+                saveUserInfo={saveUserInfoState}
+                unedit={unedit}
+              />
             </div>
-            <div>
+            <div className="mt-12">
               <LogoutButton />
             </div>
           </div>
